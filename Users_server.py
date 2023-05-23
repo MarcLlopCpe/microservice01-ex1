@@ -17,10 +17,10 @@ from concurrent import futures
 import logging
 
 import grpc
-import Users_pb2 as pb2
-import Users_pb2_grpc as pb2_grpc
+import users_pb2 as pb2
+import users_pb2_grpc as pb2_grpc
 
-from models.User_model import User_model
+from models.user_model import user_model
 
 
 def check_string_in_tuples(my_list, search_string):
@@ -29,7 +29,8 @@ def check_string_in_tuples(my_list, search_string):
             return True
     return False
 
-class Users(pb2_grpc.UsersServicer):
+
+class users(pb2_grpc.usersServicer):
 
     users = list()
     cpt_id = 1
@@ -37,7 +38,7 @@ class Users(pb2_grpc.UsersServicer):
     def Register(self, request, context):
         if not check_string_in_tuples(self.users, request.username):
 
-            user_info = User_model(
+            user_info = user_model(
                 self.cpt_id, request.mail, request.username, request.password)
 
             self.users.append(user_info)
@@ -63,7 +64,7 @@ class Users(pb2_grpc.UsersServicer):
 def serve():
     port = '50051'
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=5))
-    pb2_grpc.add_UsersServicer_to_server(Users(), server)
+    pb2_grpc.add_usersServicer_to_server(users(), server)
     server.add_insecure_port('[::]:' + port)
     server.start()
     print("Server started, listening on " + port)

@@ -1,4 +1,4 @@
-service Users {
+service users {
   rpc Register (RegisterCredentials) returns (Response) {}
   rpc Login (Credentials) returns (Response) {}
 }
