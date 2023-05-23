@@ -19,45 +19,45 @@ import logging
 
 import grpc
 
-import card_pb2 
-import card_pb2_grpc 
-
-import users_pb2 
-import users_pb2_grpc 
+import card_pb2
+import card_pb2_grpc
+import users_pb2
+import users_pb2_grpc
 
 
 def run():
     cards = []
 
-    with grpc.insecure_channel('localhost:50051') as channel:
+    with grpc.insecure_channel('localhost:50052') as channel:
         card_stub = card_pb2_grpc.CardStub(channel)
-        users_stub = users_pb2_grpc.usersStub(channel)
-        
-        ids: pb2.IdCardsResponse = card_stub.getCards(card_pb2.Empty())
+        ids = card_stub.getCards(card_pb2.Empty())
 
         for i in ids.result:
             card: card_pb2.FullCard = card_stub.getFullCard(card_pb2.SimpleCard(id=i))
             cards.append(card)
             print(card)
 
-        responseRegister = users_stub.Register(users_pb2.RegisterCredentials(
+    with grpc.insecure_channel('localhost:50051') as channel:
+        users_stub = users_pb2_grpc.usersStub(channel)
+
+        response_register = users_stub.Register(users_pb2.RegisterCredentials(
             mail='test@test.test', username='totot', password='tutu'))
-        print("register: " + str(responseRegister.code) +
-              " " + responseRegister.message)
+        print("register: " + str(response_register.code) +
+              " " + response_register.message)
 
-        sleep(1)
-
-        responseLogin = users_stub.Login(users_pb2.Credentials(
+        response_login = users_stub.Login(users_pb2.Credentials(
             username='totot', password='tutu'))
-        print("login: " + str(responseLogin.code) + " " + responseLogin.message)
+        print("login: " + str(response_login.code) + " " + response_login.message)
 
+        response_add_card = users_stub.AddCard(
+            users_pb2.AddCardRequest(username='totot', id='1', name='Bulbasaur', health='45', attack='49',
+                                     defense='49'))
+        print("add card: ", str(response_login.code), " ", response_login.message)
 
-        responseAddCard = users_stub.AddCard(card_pb2.Credentials(username='totot', id='1', name='Bulbasaur', health='45', attack='49', defense='49'))
-        print("add card: ", str(responseLogin.code), " ", responseLogin.message)
-    
-        responseGetUser = users_stub.GetUser(users_pb2.Credentials(
+        response_get_user = users_stub.GetUser(users_pb2.Credentials(
             username='totot', password='tutu'))
-        print("add card: ", str(responseLogin.code), " ", responseLogin.message)
+        print("add card: ", str(response_login.code), " ", response_login.message)
+
 
 if __name__ == '__main__':
     logging.basicConfig()

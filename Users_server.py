@@ -13,14 +13,15 @@
 # limitations under the License.
 """The Python implementation of the GRPC helloworld.Greeter server."""
 
-from concurrent import futures
 import logging
+from concurrent import futures
 
 import grpc
+
 import users_pb2 as pb2
 import users_pb2_grpc as pb2_grpc
-
 from models.User_model import User_model
+
 
 def check_string_in_tuples(my_list, search_string):
     for tup in my_list:
@@ -28,15 +29,14 @@ def check_string_in_tuples(my_list, search_string):
             return True
     return False
 
-class users(pb2_grpc.usersServicer):
 
+class users(pb2_grpc.usersServicer):
     users = list()
     cpt_id = 1
 
     def Register(self, request, context):
         if not check_string_in_tuples(self.users, request.username):
-
-            user_info = user_model(
+            user_info = User_model(
                 self.cpt_id, request.mail, request.username, request.password)
 
             self.users.append(user_info)
@@ -55,18 +55,26 @@ class users(pb2_grpc.usersServicer):
         return pb2.Response(code=0, message="User not found.")
 
     def AddCard(self, request, context):
-        for user in users:
+        for user in self.users:
             if user.username == request.username:
-                desired_user = user
-                user.add(Card(request.id, request.name, request.health, request.attack, request.defense))
+                user.add_pokemon_card(
+                    pb2.Carda(
+                        id=request.id,
+                        name=request.name,
+                        health=request.health,
+                        attack=request.attack,
+                        defense=request.defense
+                    )
+                )
                 return pb2.Response(code=1, message="Successfuly added card to user " + user.username + ".")
 
     def GetUser(self, request, context):
-        for user in users:
+        for user in self.users:
             if user.username == request.username:
-                return pb2.UserResponse(username = user.username, result=user.pokemon_cards)
-                
-def serve():
+                return pb2.UserResponse(username=user.username, result=user.pokemon_cards)
+
+
+def serv():
     port = '50051'
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=5))
     pb2_grpc.add_usersServicer_to_server(users(), server)
@@ -78,4 +86,4 @@ def serve():
 
 if __name__ == '__main__':
     logging.basicConfig()
-    serve()
+    serv()

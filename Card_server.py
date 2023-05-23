@@ -69,7 +69,7 @@ class Cards(pb2_grpc.Card):
 
 
 def serve():
-    port = '50051'
+    port = '50052'
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=5))
     pb2_grpc.add_CardServicer_to_server(Cards(), server)
     server.add_insecure_port('[::]:' + port)
