@@ -1,0 +1,27 @@
+// The greeting service definition.
+import "google/protobuf/empty.proto";
+
+service Card {
+  // Sends a greeting
+  rpc getCards (google.protobuf.Empty) returns (SimpleCardsResponse) {}
+  // Sends another greeting
+  rpc getFullCard (SimpleCard) returns (FullCard) {}
+}
+
+
+// The response message containing the greetings
+message SimpleCard {
+  required string id = 1;
+}
+
+message FullCard {
+  required string id = 1;
+  required string name = 2;
+  required string health = 3;
+  required string attack = 4;
+  required string defense = 5;
+}
+
+message SimpleCardsResponse {
+    repeated SimpleCard response=1;
+}
