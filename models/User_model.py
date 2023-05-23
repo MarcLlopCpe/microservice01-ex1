@@ -1,4 +1,4 @@
-class user_model:
+class User_model:
 
     pokemon_cards = list()
 

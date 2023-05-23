@@ -20,15 +20,13 @@ import grpc
 import users_pb2 as pb2
 import users_pb2_grpc as pb2_grpc
 
-from models.user_model import user_model
-
+from models.User_model import User_model
 
 def check_string_in_tuples(my_list, search_string):
     for tup in my_list:
         if search_string in tup:
             return True
     return False
-
 
 class users(pb2_grpc.usersServicer):
 
@@ -43,10 +41,6 @@ class users(pb2_grpc.usersServicer):
 
             self.users.append(user_info)
             self.cpt_id += 1
-            print(self.users)
-            print(self.users[0].mail)
-            print(user_info.mail)
-
             return pb2.Response(code=1, message="User successfuly added")
 
         return pb2.Response(code=0, message="User already exists")
@@ -60,7 +54,18 @@ class users(pb2_grpc.usersServicer):
                     return pb2.Response(code=0, message="Incorrect password.")
         return pb2.Response(code=0, message="User not found.")
 
+    def AddCard(self, request, context):
+        for user in users:
+            if user.username == request.username:
+                desired_user = user
+                user.add(Card(request.id, request.name, request.health, request.attack, request.defense))
+                return pb2.Response(code=1, message="Successfuly added card to user " + user.username + ".")
 
+    def GetUser(self, request, context):
+        for user in users:
+            if user.username == request.username:
+                return pb2.UserResponse(username = user.username, result=user.pokemon_cards)
+                
 def serve():
     port = '50051'
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=5))

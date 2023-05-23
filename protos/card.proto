@@ -1,4 +1,3 @@
-
 message Empty{}
 
 service Card {
@@ -8,12 +7,10 @@ service Card {
   rpc getFullCard (SimpleCard) returns (FullCard) {}
 }
 
-
 // The response message containing the greetings
 message SimpleCard {
   required int32 id = 1;
 }
-
 
 message FullCard {
   required string id = 1;
@@ -22,8 +19,6 @@ message FullCard {
   required string attack = 4;
   required string defense = 5;
 }
-
-
 
 message IdCardsResponse { // LIST
   repeated int64 result = 1;

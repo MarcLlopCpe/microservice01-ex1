@@ -1,0 +1,50 @@
+syntax = "proto2";
+
+service users {
+  rpc Register (RegisterCredentials) returns (Response) {}
+  rpc Login (Credentials) returns (Response) {}
+  rpc AddCard (AddCardRequest) returns (Response) {}
+  rpc GetUser (GetUserRequest) returns (UserResponse) {}
+}
+
+message Credentials {
+  required string username = 1;
+  required string password = 2;
+}
+
+message GetUserRequest {
+  required string username = 1;
+}
+
+message UserResponse {
+  required string username = 1;
+  repeated Carda result = 2;
+}
+
+message AddCardRequest {
+  required string username = 1; 
+  required string id = 2; 
+  required string name = 3; 
+  required string health = 4;  
+  required string attack = 5; 
+  required string defense = 6;
+}
+
+message RegisterCredentials {
+  required string mail = 1;
+  required string username = 2;
+  required string password = 3;
+}
+
+message Response {
+  required int32 code = 1;
+  required string message = 2;
+}
+
+message Carda {
+  required string id = 1;
+  required string name = 2;
+  required string health = 3;
+  required string attack = 4;
+  required string defense = 5;
+}
