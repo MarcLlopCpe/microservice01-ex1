@@ -25,9 +25,9 @@ RES_PATH = pathlib.Path("./data")
 RES_CARD = RES_PATH / pathlib.Path("pokemon.csv")
 
 
-def read_pokemons(path=RES_CARD, header_selector=(0, 1, 5, 6, 7)):
+def _read_pokemons(path=RES_CARD, header_selector=(0, 1, 5, 6, 7)):
     """
-    Lecture du csv de pokemon
+    Lecture du csv de pokemon et transformation en liste en utilisant seulement les indices contenu dans header_selector
 
     :param path: chemin du fichier csv
     :param header_selector: indice à récupérer
@@ -52,23 +52,35 @@ def read_pokemons(path=RES_CARD, header_selector=(0, 1, 5, 6, 7)):
     return ret
 
 
-class Servicer:
-    pass
-
-
 class Cards(pb2_grpc.Card):
-    full_card_list = read_pokemons()
+    full_card_list = _read_pokemons()
     id_card_list = [int(card["id"]) for card in full_card_list]
 
     def getCards(self, request, context, *args, **kwargs):
+        """
+        Renvoi une liste d'id de cartes
+        :param request:
+        :param context:
+        :param args:
+        :param kwargs:
+        :return:
+        """
         return pb2.IdCardsResponse(result=self.id_card_list)
 
     def getFullCard(self, request, context, *args, **kwargs):
+        """
+        Renvoi une carte "complète"
+        :param request:
+        :param context:
+        :param args:
+        :param kwargs:
+        :return:
+        """
         ret = self.full_card_list[request.id]
         return pb2.FullCard(**ret)
 
 
-def serve():
+def serv():  # idem que l'autre serveur
     port = '50052'
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=5))
     pb2_grpc.add_CardServicer_to_server(Cards(), server)
@@ -79,5 +91,5 @@ def serve():
 
 
 if __name__ == '__main__':
-    logging.basicConfig()
-    serve()
+    logging.basicConfig()  # Utilisation du système de log type unix
+    serv()
