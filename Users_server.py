@@ -20,6 +20,9 @@ import grpc
 import Users_pb2 as pb2
 import Users_pb2_grpc as pb2_grpc
 
+from models.User_model import User_model
+
+
 def check_string_in_tuples(my_list, search_string):
     for tup in my_list:
         if search_string in tup:
@@ -33,18 +36,24 @@ class Users(pb2_grpc.UsersServicer):
 
     def Register(self, request, context):
         if not check_string_in_tuples(self.users, request.username):
-            user_info = (self.cpt_id, request.mail, request.username, request.password)
+
+            user_info = User_model(
+                self.cpt_id, request.mail, request.username, request.password)
+
             self.users.append(user_info)
             self.cpt_id += 1
             print(self.users)
+            print(self.users[0].mail)
+            print(user_info.mail)
+
             return pb2.Response(code=1, message="User successfuly added")
 
         return pb2.Response(code=0, message="User already exists")
 
     def Login(self, request, context):
         for user in self.users:
-            if user[2] == request.username:  
-                if user[3] == request.password:  
+            if user.username == request.username:
+                if user.password == request.password:
                     return pb2.Response(code=1, message="Login successful.")
                 else:
                     return pb2.Response(code=0, message="Incorrect password.")
