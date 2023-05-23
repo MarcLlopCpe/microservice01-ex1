@@ -1,11 +1,28 @@
-# 
+# Distributed programming day 2
 
-commande :
+# Installation
+
+## Requirements
+
+Python >= 3.10
+
+## Procédure (OS Linux)
+
 ```shell
-python -m grpc_tools.protoc -I./protos --python_out=. --pyi_out=. --grpc_python_out=. helloworld.proto
+# cd project/root/folder
+
+# virtual environment creation
+python -m venv venv
+
+source venv/bin/activate
+
+python -m pip install grpcio-tools
 ```
 
-generate user service files:
+# Generate GRPC files for python
+
 ```sh
-python3.10 -m grpc_tools.protoc -I ./protos --python_out=. --pyi_out=. --grpc_python_out=. users.proto
+python -m grpc_tools.protoc -I./protos --python_out=. --pyi_out=. --grpc_python_out=. card.proto
+python -m grpc_tools.protoc -I./protos --python_out=. --pyi_out=. --grpc_python_out=. users.proto
 ```
+
