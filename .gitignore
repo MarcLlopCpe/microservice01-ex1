@@ -10,7 +10,6 @@ __pycache__/
 Users_pb2.py
 Users_pb2.pyi
 Users_pb2_grpc.py
-Users_server.py
 protos/Users.proto
 
 
